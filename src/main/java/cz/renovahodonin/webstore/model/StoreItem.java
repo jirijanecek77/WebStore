@@ -11,18 +11,18 @@ public class StoreItem
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private ItemUnit unit;
+    @OneToOne(fetch = FetchType.EAGER)
+    private UnitOfMeasure unit;
     private int amount;
 
     @ManyToOne
-    @JoinColumn(name="store_id", nullable=false)
     private Store store;
 
     public StoreItem()
     {
     }
 
-    public StoreItem(Store store, String name, ItemUnit unit, int amount)
+    public StoreItem(Store store, String name, UnitOfMeasure unit, int amount)
     {
         this.store = store;
         this.name = name;
@@ -60,12 +60,12 @@ public class StoreItem
         this.name = name;
     }
 
-    public ItemUnit getUnit()
+    public UnitOfMeasure getUnit()
     {
         return unit;
     }
 
-    public void setUnit(ItemUnit unit)
+    public void setUnit(UnitOfMeasure unit)
     {
         this.unit = unit;
     }
