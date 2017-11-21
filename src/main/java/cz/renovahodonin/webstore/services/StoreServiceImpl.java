@@ -5,7 +5,9 @@ import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StoreServiceImpl implements StoreService
@@ -22,7 +24,7 @@ public class StoreServiceImpl implements StoreService
     {
         List<Store> stores = new ArrayList<>();
         storeRepository.findAll().iterator().forEachRemaining(stores::add);
-        return stores;
+        return stores.stream().sorted(Comparator.comparing(Store::getName)).collect(Collectors.toList());
     }
 
     @Override

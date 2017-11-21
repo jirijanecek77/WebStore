@@ -17,6 +17,7 @@
             crossorigin="anonymous" th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
 </head>
 <body>
+<!--/*@thymesVar id="stores" type="List<cz.renovahodonin.webstore.model.Store>"*/-->
 <div class="container-fluid" style="margin-top: 20px">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
@@ -32,23 +33,27 @@
                             <tr>
                                 <th>#</th>
                                 <th>Vyberte sklad</th>
-                                <th>Položky</th>
+                                <th>Počet položek</th>
+                                <th>Pohyby</th>
                             </tr>
                             </thead>
                             <tr th:remove="all">
                                 <td>1</td>
-                                <td>Nařadí</td>
+                                <td><a href="#">Nařadí</a></td>
+                                <th>10</th>
                                 <td><a href="#">Zobrazit</a></td>
                             </tr>
                             <tr th:remove="all">
                                 <td>2</td>
-                                <td>Elektro materiál</td>
+                                <td><a href="#">Elektro materiál</a></td>
+                                <th>100</th>
                                 <td><a href="#">Zobrazit</a></td>
                             </tr>
                             <tr th:each="i : ${#numbers.sequence(0, stores.size() - 1)}">
                                 <td th:text="${i+1}">1</td>
-                                <td th:text="${stores.get(i).name}">Stavební materiál</td>
-                                <td><a href="#" th:href="@{'/' + ${stores.get(i).id} + '/items'}">Zobrazit</a></td>
+                                <td><a href="#" th:href="@{'/' + ${stores.get(i).id} + '/items'}" th:text="${stores.get(i).name}">Stavební materiál</td>
+                                <td th:text="${stores.get(i).getItems().size()}">120</td>
+                                <td><a href="#" th:href="@{'/' + ${stores.get(i).id} + '/receipt'}">Zobrazit</a></td>
                             </tr>
                         </table>
                     </div>

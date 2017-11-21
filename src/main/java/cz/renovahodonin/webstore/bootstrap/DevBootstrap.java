@@ -35,8 +35,9 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
         unitOfMeasureRepository.deleteAll();
 
         unitOfMeasureRepository.saveAll(getUnitsOfMeasure());
-        storeRepository.saveAll(getStores());
-        storeItemRepository.saveAll(getStoreItems());
+        List<Store> stores = getStores();
+        storeRepository.saveAll(stores);
+        storeItemRepository.saveAll(getStoreItems(stores.get(0)));
     }
 
     private List<UnitOfMeasure> getUnitsOfMeasure()
@@ -58,20 +59,19 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
 
         Store naradi = new Store("Nářadí");
         Store material = new Store("Materiál");
-        Store pisek = new Store("Písek");
+        Store pisek = new Store("Elektro");
 
-        stores.add(naradi);
         stores.add(material);
+        stores.add(naradi);
         stores.add(pisek);
 
         return stores;
     }
 
-    private List<StoreItem> getStoreItems()
+    private List<StoreItem> getStoreItems(Store store)
     {
         List<StoreItem> items = new ArrayList<>();
 
-        Store store = storeRepository.findAll().iterator().next();
         StoreItem pisek = new StoreItem(
                 store,
                 "pisek",
