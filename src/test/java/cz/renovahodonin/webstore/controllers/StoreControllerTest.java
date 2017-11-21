@@ -1,7 +1,6 @@
 package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.model.Store;
-import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.services.StoreService;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,23 +21,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-public class StoresControllerTest
+public class StoreControllerTest
 {
-    private static final Long STORE_ID = 10L;
-
     @Mock
     StoreService storeService;
 
     @Mock
     Model model;
 
-    StoresController controller;
+    StoreController controller;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        controller = new StoresController(storeService);
+        controller = new StoreController(storeService);
     }
 
     @Test
@@ -51,7 +48,7 @@ public class StoresControllerTest
     }
 
     @Test
-    public void showStores() throws Exception {
+    public void getViewTest() throws Exception {
 
         //given
         List<Store> stores = new ArrayList<>();
@@ -62,49 +59,20 @@ public class StoresControllerTest
 
         stores.add(store);
 
-        when(storeService.getStores()).thenReturn(stores);
+        when(storeService.getView()).thenReturn(stores);
 
         ArgumentCaptor<List<Store>> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
         //when
-        String viewName = controller.showStores(model);
+        String viewName = controller.getView(model);
 
 
         //then
         assertEquals("index", viewName);
-        verify(storeService, times(1)).getStores();
+        verify(storeService, times(1)).getView();
         verify(model, times(1)).addAttribute(eq("stores"), argumentCaptor.capture());
         List<Store> setInController = argumentCaptor.getValue();
         assertEquals(2, setInController.size());
     }
 
-    @Test
-    public void showStoreItems() throws Exception {
-
-        //given
-        Store store = new Store();
-        store.setId(STORE_ID);
-        List<StoreItem> items = new ArrayList<>();
-        StoreItem item1 = new StoreItem();
-        item1.setStore(store);
-        items.add(item1);
-        StoreItem item2 = new StoreItem();
-        item2.setId(1L);
-        item2.setStore(store);
-        items.add(item2);
-
-        when(storeService.getStoreItems(STORE_ID)).thenReturn(items);
-
-        ArgumentCaptor<List<StoreItem>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-
-        //when
-        String viewName = controller.showStoreItems(STORE_ID.toString(), model);
-
-        //then
-        assertEquals("/items", viewName);
-        verify(storeService, times(1)).getStoreItems(STORE_ID);
-        verify(model, times(1)).addAttribute(eq("store_items"), argumentCaptor.capture());
-        List<StoreItem> setInController = argumentCaptor.getValue();
-        assertEquals(2, setInController.size());
-    }
 }
