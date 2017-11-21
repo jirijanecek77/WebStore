@@ -9,34 +9,26 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * TODO: Enter a paragraph that summarizes what the class does and why someone might want to utilize it
- * <p>
- * © 2017 NetSuite Inc.
- *
- * @author jjanecek
- * @since 2017-11-21
- */
-public class StoreItemControllerTest
+public class ReceiptControllerTest
 {
 	private static final Long STORE_ID = 1L;
 
 	@Mock
 	StoreService storeService;
 
-	StoreItemController controller;
+	ReceiptController controller;
 	MockMvc mockMvc;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		controller = new StoreItemController(storeService);
+		controller = new ReceiptController(storeService);
 		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
 
@@ -49,11 +41,11 @@ public class StoreItemControllerTest
 
 		when(storeService.findById(anyLong())).thenReturn(store);
 
-		mockMvc.perform(get("/" + STORE_ID + "/items"))
+		mockMvc.perform(get("/" + STORE_ID + "/receipts"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("/items"))
+				.andExpect(view().name("/receipts"))
 				.andExpect(model().attributeExists("store"))
-				.andExpect(model().attributeExists("items"));
+				.andExpect(model().attributeExists("receipts"));
 	}
 
 }

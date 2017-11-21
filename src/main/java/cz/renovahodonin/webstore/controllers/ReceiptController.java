@@ -7,21 +7,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-public class StoreItemController
+public class ReceiptController
 {
 	private StoreService storeService;
 
-	public StoreItemController(StoreService storeService)
+	public ReceiptController(StoreService storeService)
 	{
 		this.storeService = storeService;
 	}
 
-	@GetMapping("/{storeId}/items")
+
+	@GetMapping("/{storeId}/receipts")
 	public String getView(@PathVariable String storeId, Model model){
 
 		model.addAttribute("store", storeService.findById(Long.valueOf(storeId)).getName());
-		model.addAttribute("items", storeService.findById(Long.valueOf(storeId)).getItems());
+		model.addAttribute("receipts", storeService.findById(Long.valueOf(storeId)).getReceipts());
 
-		return "/items";
+		return "/receipts";
 	}
 }

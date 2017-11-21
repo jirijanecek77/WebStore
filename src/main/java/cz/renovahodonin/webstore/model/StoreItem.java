@@ -1,6 +1,12 @@
 package cz.renovahodonin.webstore.model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.util.Objects;
 
 @Entity
@@ -22,9 +28,8 @@ public class StoreItem
     {
     }
 
-    public StoreItem(Store store, String name, UnitOfMeasure unit, int amount)
+    public StoreItem(String name, UnitOfMeasure unit, int amount)
     {
-        this.store = store;
         this.name = name;
         this.unit = unit;
         this.amount = amount;

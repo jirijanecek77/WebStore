@@ -23,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class StoreControllerTest
 {
+
+    private static final Long STORE_ID = 1L;
+
     @Mock
     StoreService storeService;
 
@@ -55,7 +58,7 @@ public class StoreControllerTest
         stores.add(new Store());
 
         Store store = new Store();
-        store.setId(1L);
+        store.setId(STORE_ID);
 
         stores.add(store);
 
@@ -65,7 +68,6 @@ public class StoreControllerTest
 
         //when
         String viewName = controller.getView(model);
-
 
         //then
         assertEquals("index", viewName);

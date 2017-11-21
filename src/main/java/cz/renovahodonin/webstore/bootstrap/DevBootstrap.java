@@ -1,15 +1,16 @@
 package cz.renovahodonin.webstore.bootstrap;
 
+import cz.renovahodonin.webstore.model.Receipt;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.model.UnitOfMeasure;
-import cz.renovahodonin.webstore.repositories.StoreItemRepository;
 import cz.renovahodonin.webstore.repositories.StoreRepository;
 import cz.renovahodonin.webstore.repositories.UnitOfMeasureRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,26 +19,22 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
 {
     private StoreRepository storeRepository;
     private UnitOfMeasureRepository unitOfMeasureRepository;
-    private StoreItemRepository storeItemRepository;
 
-    public DevBootstrap(StoreRepository storeRepository, UnitOfMeasureRepository unitOfMeasureRepository, StoreItemRepository storeItemRepository)
+    public DevBootstrap(StoreRepository storeRepository, UnitOfMeasureRepository unitOfMeasureRepository)
     {
         this.storeRepository = storeRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
-        this.storeItemRepository = storeItemRepository;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent)
     {
-        storeItemRepository.deleteAll();
         storeRepository.deleteAll();
         unitOfMeasureRepository.deleteAll();
 
         unitOfMeasureRepository.saveAll(getUnitsOfMeasure());
         List<Store> stores = getStores();
         storeRepository.saveAll(stores);
-        storeItemRepository.saveAll(getStoreItems(stores.get(0)));
     }
 
     private List<UnitOfMeasure> getUnitsOfMeasure()
@@ -61,6 +58,9 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
         Store material = new Store("Materiál");
         Store pisek = new Store("Elektro");
 
+        material.setItems(getStoreItems());
+        material.setReceipts(getReceipts());
+
         stores.add(material);
         stores.add(naradi);
         stores.add(pisek);
@@ -68,18 +68,33 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
         return stores;
     }
 
-    private List<StoreItem> getStoreItems(Store store)
+    private List<Receipt> getReceipts()
+    {
+        List<Receipt> receipts = new ArrayList<>();
+
+        Receipt receipt1 = new Receipt(LocalDate.of(2017,11,24), "P001");
+        Receipt receipt2 = new Receipt(LocalDate.of(2017,11,25), "P002");
+        Receipt receipt3 = new Receipt(LocalDate.of(2017,11,25), "P003");
+        Receipt receipt4 = new Receipt(LocalDate.of(2017,11,26), "V001");
+
+        receipts.add(receipt1);
+        receipts.add(receipt2);
+        receipts.add(receipt3);
+        receipts.add(receipt4);
+
+        return receipts;
+    }
+
+    private List<StoreItem> getStoreItems()
     {
         List<StoreItem> items = new ArrayList<>();
 
         StoreItem pisek = new StoreItem(
-                store,
                 "pisek",
                 unitOfMeasureRepository.findAll().iterator().next(),
                 100);
 
         StoreItem cement = new StoreItem(
-                store,
                 "cement",
                 unitOfMeasureRepository.findAll().iterator().next(),
                 50);

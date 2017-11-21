@@ -1,5 +1,6 @@
 package cz.renovahodonin.webstore.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,9 +19,13 @@ public class Store
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     @OrderBy("name")
     private List<StoreItem> items = new ArrayList<>();
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+	@OrderBy("date, number")
+	private List<Receipt> receipts = new ArrayList<>();
 
     public Store()
     {
@@ -36,6 +41,13 @@ public class Store
         this.name = name;
         this.items = items;
     }
+
+	public Store(String name, List<StoreItem> items, List<Receipt> receipts)
+	{
+		this.name = name;
+		this.items = items;
+		this.receipts = receipts;
+	}
 
     public Long getId()
     {
@@ -65,32 +77,46 @@ public class Store
     public void setItems(List<StoreItem> items)
     {
         this.items = items;
+        items.forEach(item -> item.setStore(this));
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Store store = (Store) o;
-        return Objects.equals(id, store.id) &&
-                Objects.equals(name, store.name) &&
-                Objects.equals(items, store.items);
-    }
+	public List<Receipt> getReceipts()
+	{
+		return receipts;
+	}
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, name, items);
-    }
+	public void setReceipts(List<Receipt> receipts)
+	{
+		this.receipts = receipts;
+		receipts.forEach(receipt -> receipt.setStore(this));
+	}
 
-    @Override
-    public String toString()
-    {
-        return "Store{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", items=" + items +
-                '}';
-    }
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Store store = (Store) o;
+		return Objects.equals(id, store.id) &&
+				Objects.equals(name, store.name) &&
+				Objects.equals(items, store.items) &&
+				Objects.equals(receipts, store.receipts);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(id, name, items, receipts);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Store{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", items=" + items +
+				", receipts=" + receipts +
+				'}';
+	}
 }
