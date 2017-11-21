@@ -17,7 +17,7 @@
             crossorigin="anonymous" th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
 </head>
 <body>
-<!--/*@thymesVar id="stores" type="List<cz.renovahodonin.webstore.model.Store>"*/-->
+<!--/*@thymesVar id="stores" type="java.util.List<cz.renovahodonin.webstore.model.Store>"*/-->
 <div class="container-fluid" style="margin-top: 20px">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
@@ -51,7 +51,7 @@
                             </tr>
                             <tr th:each="i : ${#numbers.sequence(0, stores.size() - 1)}">
                                 <td th:text="${i+1}">1</td>
-                                <td><a href="#" th:href="@{'/' + ${stores.get(i).id} + '/items'}" th:text="${stores.get(i).name}">Stavební materiál</td>
+                                <td><a href="#" th:href="@{'/' + ${stores.get(i).id} + '/items'}" th:text="${stores.get(i).name}">Stavební materiál</a></td>
                                 <td th:text="${stores.get(i).getItems().size()}">120</td>
                                 <td><a href="#" th:href="@{'/' + ${stores.get(i).id} + '/receipt'}">Zobrazit</a></td>
                             </tr>
