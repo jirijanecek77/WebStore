@@ -19,7 +19,7 @@ public class StoreItem
     private String name;
     @OneToOne(fetch = FetchType.EAGER)
     private UnitOfMeasure unit;
-    private int amount;
+    private Integer amount;
 
     @ManyToOne
     private Store store;
@@ -75,12 +75,12 @@ public class StoreItem
         this.unit = unit;
     }
 
-    public int getAmount()
+    public Integer getAmount()
     {
         return amount;
     }
 
-    public void setAmount(int amount)
+    public void setAmount(Integer amount)
     {
         this.amount = amount;
     }
