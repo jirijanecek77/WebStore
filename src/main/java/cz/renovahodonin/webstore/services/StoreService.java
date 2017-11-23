@@ -8,5 +8,9 @@ public interface StoreService
 {
     List<Store> getView();
 
-    Store findById(Long storeId);
+    Store findById(Long id);
+
+	void deleteStore(Long id);
+
+	Store saveStore(Store store);
 }
