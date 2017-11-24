@@ -85,13 +85,13 @@ public class StoreControllerTest
 	}
 
 	@Test
-	public void testPostNewRecipeForm() throws Exception {
+	public void testPostNewStoreForm() throws Exception {
 		Store store = new Store();
 		store.setId(2L);
 
 		when(storeService.saveStore(any())).thenReturn(store);
 
-		mockMvc.perform(post("/store")
+		mockMvc.perform(post("/store/")
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("id", "")
 				.param("description", "some string")
@@ -109,6 +109,16 @@ public class StoreControllerTest
 		when(storeService.findById(anyLong())).thenReturn(store);
 
 		mockMvc.perform(get("/" + STORE_ID + "/update"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("/storeform"))
+				.andExpect(model().attributeExists("store"));
+	}
+
+	@Test
+	public void testGetNewStoreForm() throws Exception {
+		Store store = new Store();
+
+		mockMvc.perform(get("/store/new"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("/storeform"))
 				.andExpect(model().attributeExists("store"));

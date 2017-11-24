@@ -28,6 +28,13 @@ public class StoreController
 		return "index";
 	}
 
+	@GetMapping("store/new")
+	public String newStore(Model model){
+		model.addAttribute("store", new Store());
+
+		return "/storeform";
+	}
+
 	@GetMapping("/{id}/update")
 	public String updateStore(@PathVariable String id, Model model)
 	{
