@@ -10,7 +10,7 @@ public interface StoreService
 
     Store findById(Long id);
 
-	void deleteStore(Long id);
+	void delete(Long id);
 
-	Store saveStore(Store store);
+	Store save(Store store);
 }

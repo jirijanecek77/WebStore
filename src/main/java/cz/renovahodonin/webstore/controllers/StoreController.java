@@ -10,49 +10,51 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class StoreController
+class StoreController
 {
-	private StoreService storeService;
+    private StoreService storeService;
 
-	public StoreController(StoreService storeService)
-	{
-		this.storeService = storeService;
-	}
+    StoreController(StoreService storeService)
+    {
+        this.storeService = storeService;
+    }
 
-	@GetMapping({"/", "", "/index"})
-	public String getView(Model model)
-	{
+    @GetMapping({"/", "", "/index"})
+    String getView(Model model)
+    {
 
-		model.addAttribute("stores", storeService.getView());
+        model.addAttribute("stores", storeService.getView());
 
-		return "index";
-	}
+        return "index";
+    }
 
-	@GetMapping("store/new")
-	public String newStore(Model model){
-		model.addAttribute("store", new Store());
+    @GetMapping("store/new")
+    public String add(Model model)
+    {
+        model.addAttribute("store", new Store());
 
-		return "/storeform";
-	}
+        return "/storeform";
+    }
 
-	@GetMapping("/{id}/update")
-	public String updateStore(@PathVariable String id, Model model)
-	{
-		model.addAttribute("store", storeService.findById(Long.valueOf(id)));
-		return "/storeform";
-	}
+    @GetMapping("/{id}/update")
+    public String update(@PathVariable String id, Model model)
+    {
+        model.addAttribute("store", storeService.findById(Long.valueOf(id)));
+        return "/storeform";
+    }
 
     @PostMapping("/store/")
-    public String saveOrUpdate(@ModelAttribute Store store){
-        storeService.saveStore(store);
+    public String saveOrUpdate(@ModelAttribute Store store)
+    {
+        storeService.save(store);
         return "redirect:/";
     }
 
-	@GetMapping("/{id}/delete")
-	public String deleteStore(@PathVariable String id)
-	{
-		storeService.deleteStore(Long.valueOf(id));
-		return "redirect:/";
-	}
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable String id)
+    {
+        storeService.delete(Long.valueOf(id));
+        return "redirect:/";
+    }
 
 }

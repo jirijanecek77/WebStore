@@ -5,17 +5,17 @@ import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
-public class StoreServiceImpl implements StoreService
+class StoreServiceImpl implements StoreService
 {
 	private final StoreRepository storeRepository;
 
-	public StoreServiceImpl(StoreRepository storeRepository)
+	StoreServiceImpl(StoreRepository storeRepository)
 	{
 		this.storeRepository = storeRepository;
 	}
@@ -24,9 +24,9 @@ public class StoreServiceImpl implements StoreService
 	@Transactional
 	public List<Store> getView()
 	{
-		List<Store> stores = new ArrayList<>();
-		storeRepository.findAll().iterator().forEachRemaining(stores::add);
-		return stores.stream().sorted(Comparator.comparing(Store::getName)).collect(Collectors.toList());
+		return StreamSupport.stream(storeRepository.findAll().spliterator(), false)
+                .sorted(Comparator.comparing(e -> e.getName().toUpperCase()))
+                .collect(Collectors.toList());
 	}
 
 	@Override
@@ -38,14 +38,14 @@ public class StoreServiceImpl implements StoreService
 
 	@Override
 	@Transactional
-	public void deleteStore(Long id)
+	public void delete(Long id)
 	{
 		storeRepository.deleteById(id);
 	}
 
 	@Override
 	@Transactional
-	public Store saveStore(Store store)
+	public Store save(Store store)
 	{
 		return storeRepository.save(store);
 	}

@@ -16,36 +16,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ReceiptControllerTest
 {
-	private static final Long STORE_ID = 1L;
+    private static final Long STORE_ID = 1L;
 
-	@Mock
-	StoreService storeService;
+    @Mock
+    private StoreService storeService;
 
-	ReceiptController controller;
-	MockMvc mockMvc;
+    private ReceiptController controller;
+    private MockMvc mockMvc;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
+    @Before
+    public void setUp() throws Exception
+    {
+        MockitoAnnotations.initMocks(this);
 
-		controller = new ReceiptController(storeService);
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-	}
+        controller = new ReceiptController(storeService);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    }
 
-	@Test
-	public void testMockMVC() throws Exception {
+    @Test
+    public void testMockMVC() throws Exception
+    {
 
-		Store store = new Store();
-		store.setName("name");
-		store.setId(STORE_ID);
+        Store store = new Store();
+        store.setName("name");
+        store.setId(STORE_ID);
 
-		when(storeService.findById(anyLong())).thenReturn(store);
+        when(storeService.findById(anyLong())).thenReturn(store);
 
-		mockMvc.perform(get("/" + STORE_ID + "/receipts"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("/receipts"))
-				.andExpect(model().attributeExists("store"))
-				.andExpect(model().attributeExists("receipts"));
-	}
+        mockMvc.perform(get("/" + STORE_ID + "/receipts"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/receipts"))
+                .andExpect(model().attributeExists("store"))
+                .andExpect(model().attributeExists("receipts"));
+    }
 
 }

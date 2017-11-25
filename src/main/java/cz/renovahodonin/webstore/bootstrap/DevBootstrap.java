@@ -72,10 +72,10 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
     {
         List<Receipt> receipts = new ArrayList<>();
 
-        Receipt receipt1 = new Receipt(LocalDate.of(2017,11,24), "P001");
-        Receipt receipt2 = new Receipt(LocalDate.of(2017,11,25), "P002");
-        Receipt receipt3 = new Receipt(LocalDate.of(2017,11,25), "P003");
-        Receipt receipt4 = new Receipt(LocalDate.of(2017,11,26), "V001");
+        Receipt receipt1 = new Receipt(LocalDate.of(2017, 11, 24), "P001");
+        Receipt receipt2 = new Receipt(LocalDate.of(2017, 11, 25), "P002");
+        Receipt receipt3 = new Receipt(LocalDate.of(2017, 11, 25), "P003");
+        Receipt receipt4 = new Receipt(LocalDate.of(2017, 11, 26), "V001");
 
         receipts.add(receipt1);
         receipts.add(receipt2);

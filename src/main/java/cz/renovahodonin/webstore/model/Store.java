@@ -1,12 +1,6 @@
 package cz.renovahodonin.webstore.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,9 +17,9 @@ public class Store
     @OrderBy("name")
     private List<StoreItem> items = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-	@OrderBy("date, number")
-	private List<Receipt> receipts = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    @OrderBy("date, number")
+    private List<Receipt> receipts = new ArrayList<>();
 
     public Store()
     {
@@ -42,12 +36,12 @@ public class Store
         this.items = items;
     }
 
-	public Store(String name, List<StoreItem> items, List<Receipt> receipts)
-	{
-		this.name = name;
-		this.items = items;
-		this.receipts = receipts;
-	}
+    public Store(String name, List<StoreItem> items, List<Receipt> receipts)
+    {
+        this.name = name;
+        this.items = items;
+        this.receipts = receipts;
+    }
 
     public Long getId()
     {
@@ -80,10 +74,16 @@ public class Store
         items.forEach(item -> item.setStore(this));
     }
 
-	public List<Receipt> getReceipts()
-	{
-		return receipts;
-	}
+    public void addStoreItem(StoreItem item)
+    {
+        item.setStore(this);
+        this.items.add(item);
+    }
+
+    public List<Receipt> getReceipts()
+    {
+        return receipts;
+    }
 
 	public void setReceipts(List<Receipt> receipts)
 	{
@@ -91,32 +91,38 @@ public class Store
 		receipts.forEach(receipt -> receipt.setStore(this));
 	}
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Store store = (Store) o;
-		return Objects.equals(id, store.id) &&
-				Objects.equals(name, store.name) &&
-				Objects.equals(items, store.items) &&
-				Objects.equals(receipts, store.receipts);
-	}
+    public void addReceipt(Receipt receipt)
+    {
+        receipt.setStore(this);
+        this.receipts.add(receipt);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(id, name, items, receipts);
-	}
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Store store = (Store) o;
+        return Objects.equals(id, store.id) &&
+                Objects.equals(name, store.name) &&
+                Objects.equals(items, store.items) &&
+                Objects.equals(receipts, store.receipts);
+    }
 
-	@Override
-	public String toString()
-	{
-		return "Store{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", items=" + items +
-				", receipts=" + receipts +
-				'}';
-	}
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, name, items, receipts);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Store{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", items=" + items +
+                ", receipts=" + receipts +
+                '}';
+    }
 }
