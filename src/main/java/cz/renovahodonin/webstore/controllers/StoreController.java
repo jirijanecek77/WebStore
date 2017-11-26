@@ -1,5 +1,7 @@
 package cz.renovahodonin.webstore.controllers;
 
+import cz.renovahodonin.webstore.constants.ServiceMapping;
+import cz.renovahodonin.webstore.constants.ViewName;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.services.StoreService;
 import org.springframework.stereotype.Controller;
@@ -19,42 +21,41 @@ class StoreController
         this.storeService = storeService;
     }
 
-    @GetMapping({"/", "", "/index"})
+    @GetMapping({"/index", "", ServiceMapping.STORE})
     String getView(Model model)
     {
 
         model.addAttribute("stores", storeService.getView());
 
-        return "index";
+        return ViewName.STORE;
     }
 
-    @GetMapping("store/new")
+    @GetMapping(ServiceMapping.STORE_NEW)
     public String add(Model model)
     {
         model.addAttribute("store", new Store());
 
-        return "/storeform";
+        return ViewName.STORE_NEW;
     }
 
-    @GetMapping("/{id}/update")
+    @GetMapping("/{id}" + ServiceMapping.STORE_UPDATE)
     public String update(@PathVariable String id, Model model)
     {
         model.addAttribute("store", storeService.findById(Long.valueOf(id)));
-        return "/storeform";
+        return ViewName.STORE_NEW;
     }
 
-    @PostMapping("/store/")
+    @PostMapping(ServiceMapping.STORE_POST)
     public String saveOrUpdate(@ModelAttribute Store store)
     {
         storeService.save(store);
-        return "redirect:/";
+        return "redirect:" + ServiceMapping.STORE;
     }
 
-    @GetMapping("/{id}/delete")
+    @GetMapping("/{id}" + ServiceMapping.STORE_DELETE)
     public String delete(@PathVariable String id)
     {
         storeService.delete(Long.valueOf(id));
-        return "redirect:/";
+        return "redirect:" + ServiceMapping.STORE;
     }
-
 }

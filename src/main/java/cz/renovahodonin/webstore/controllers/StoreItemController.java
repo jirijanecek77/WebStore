@@ -1,5 +1,7 @@
 package cz.renovahodonin.webstore.controllers;
 
+import cz.renovahodonin.webstore.constants.ServiceMapping;
+import cz.renovahodonin.webstore.constants.ViewName;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.model.UnitOfMeasure;
@@ -28,16 +30,16 @@ class StoreItemController
         this.unitOfMeasureService = unitOfMeasureService;
     }
 
-    @GetMapping("/{storeId}/items")
+    @GetMapping("/{storeId}" + ServiceMapping.STOREITEM)
     public String getView(@PathVariable String storeId, Model model)
     {
 
         model.addAttribute("store", storeService.findById(Long.valueOf(storeId)));
 
-        return "/storeitems";
+        return ViewName.STOREITEM;
     }
 
-    @GetMapping("/{storeId}/storeItem/new")
+    @GetMapping("/{storeId}" + ServiceMapping.STOREITEM_NEW)
     public String add(@PathVariable String storeId, Model model)
     {
         Store store = new Store();
@@ -52,29 +54,29 @@ class StoreItemController
         model.addAttribute("storeItem", storeItem);
         model.addAttribute("units",  unitOfMeasureService.getView());
 
-        return "/storeitemform";
+        return ViewName.STOREITEM_NEW;
     }
 
-    @GetMapping("/{storeId}/storeItem/{id}/update")
+    @GetMapping("/{storeId}" + ServiceMapping.STOREITEM_POST + "/{id}" + ServiceMapping.STOREITEM_UPDATE)
     public String update(@PathVariable String storeId, @PathVariable String id, Model model)
     {
         model.addAttribute("storeId", Long.valueOf(storeId));
         model.addAttribute("storeItem", storeItemService.findById(Long.valueOf(id)));
         model.addAttribute("units", unitOfMeasureService.getView());
-        return "/storeitemform";
+        return ViewName.STOREITEM_NEW;
     }
 
-    @PostMapping("/{storeId}/storeItem")
+    @PostMapping("/{storeId}" + ServiceMapping.STOREITEM_POST)
     public String saveOrUpdate(@PathVariable String storeId, @ModelAttribute StoreItem storeItem)
     {
         storeItemService.save(Long.valueOf(storeId), storeItem);
-        return "redirect:/" + storeId + "/items";
+        return "redirect:/" + storeId + ServiceMapping.STOREITEM;
     }
 
-    @GetMapping("/{storeId}/storeItem/{id}/delete")
+    @GetMapping("/{storeId}" + ServiceMapping.STOREITEM_POST + "/{id}" + ServiceMapping.STOREITEM_DELETE)
     public String delete(@PathVariable String storeId, @PathVariable String id)
     {
         storeItemService.delete(Long.valueOf(id));
-        return "redirect:/" + storeId + "/items";
+        return "redirect:/" + storeId + ServiceMapping.STOREITEM;
     }
 }

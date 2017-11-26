@@ -30,7 +30,6 @@ class StoreServiceImpl implements StoreService
 	}
 
 	@Override
-	@Transactional
 	public Store findById(Long id)
 	{
 		return storeRepository.findById(id).orElseThrow(() -> new RuntimeException("Sklad s ID " + id + " nebyl nalezen!"));

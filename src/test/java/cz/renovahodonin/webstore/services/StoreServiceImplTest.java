@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 public class StoreServiceImplTest
 {
-    private static final long STORE_ID = 1L;
+    private static final Long STORE_ID = 1L;
     private StoreServiceImpl storeService;
 
     @Mock
@@ -76,7 +76,7 @@ public class StoreServiceImplTest
         Store savedStore = storeService.save(store);
 
         //then
-        assertEquals(Long.valueOf(STORE_ID), savedStore.getId());
+        assertEquals(STORE_ID, savedStore.getId());
         verify(storeRepository, times(1)).save(any(Store.class));
 
     }
