@@ -1,5 +1,6 @@
 package cz.renovahodonin.webstore.services;
 
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ class StoreServiceImpl implements StoreService
 	@Override
 	public Store findById(Long id)
 	{
-		return storeRepository.findById(id).orElseThrow(() -> new RuntimeException("Sklad s ID " + id + " nebyl nalezen!"));
+		return storeRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Sklad s ID " + id + " nebyl nalezen!"));
 	}
 
 	@Override

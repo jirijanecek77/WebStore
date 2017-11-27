@@ -1,7 +1,7 @@
 package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.constants.ServiceMapping;
-import cz.renovahodonin.webstore.constants.ViewName;
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.services.StoreService;
 import org.junit.Before;
@@ -55,11 +55,11 @@ public class StoreControllerTest
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewName.STORE));
+                .andExpect(view().name(StoreController.STORE));
     }
 
     @Test
-    public void getViewTest() throws Exception
+    public void testGetView() throws Exception
     {
 
         //given
@@ -79,7 +79,7 @@ public class StoreControllerTest
         String viewName = controller.getView(model);
 
         //then
-        assertEquals(ViewName.STORE, viewName);
+        assertEquals(StoreController.STORE, viewName);
         verify(storeService, times(1)).getView();
         verify(model, times(1)).addAttribute(eq("stores"), argumentCaptor.capture());
         List<Store> setInController = argumentCaptor.getValue();
@@ -111,10 +111,23 @@ public class StoreControllerTest
 
         when(storeService.findById(anyLong())).thenReturn(store);
 
-        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_UPDATE))
+        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.UPDATE))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewName.STORE_NEW))
+                .andExpect(view().name(StoreController.STORE_NEW))
                 .andExpect(model().attributeExists("store"));
+    }
+
+    @Test
+    public void testUpdateStoreNotFound() throws Exception
+    {
+        Store store = new Store();
+        store.setId(STORE_ID);
+
+        when(storeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.UPDATE))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE));
     }
 
     @Test
@@ -122,14 +135,14 @@ public class StoreControllerTest
     {
         mockMvc.perform(get(ServiceMapping.STORE_NEW))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewName.STORE_NEW))
+                .andExpect(view().name(StoreController.STORE_NEW))
                 .andExpect(model().attributeExists("store"));
     }
 
     @Test
     public void testDeleteAction() throws Exception
     {
-        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STORE_DELETE))
+        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.DELETE))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 

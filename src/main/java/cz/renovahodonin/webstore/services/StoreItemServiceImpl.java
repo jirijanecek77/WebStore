@@ -1,5 +1,7 @@
 package cz.renovahodonin.webstore.services;
 
+import cz.renovahodonin.webstore.exceptions.IllegalValueException;
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.repositories.StoreItemRepository;
@@ -27,19 +29,20 @@ class StoreItemServiceImpl implements StoreItemService
     @Override
     public StoreItem findById(Long id)
     {
-        return storeItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Položka skladu s ID " + id + " nebyla nalezena!"));
+        return storeItemRepository.findById(id).orElseThrow(() -> new NotFoundException("Položka skladu s ID " + id + " nebyla nalezena!"));
     }
 
     @Override
     @Transactional
     public StoreItem save(Long storeId, StoreItem storeItem)
     {
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("Sklad s ID " + storeId + " nebyl nalezen!"));
+
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new NotFoundException("Sklad s ID " + storeId + " nebyl nalezen!"));
 
         if (store.getItems().stream()
                 .anyMatch(item -> !item.getId().equals(storeItem.getId()) && item.getName().equals(storeItem.getName())))
         {
-            throw new RuntimeException("Položka s názvem " + storeItem.getName() + " již existuje!");
+            throw new IllegalValueException("Položka s názvem " + storeItem.getName() + " již existuje!");
         }
 
         Optional<StoreItem> storeItemInStore = store.getItems().stream()
@@ -53,7 +56,7 @@ class StoreItemServiceImpl implements StoreItemService
             updatedStoreItem.setName(storeItem.getName());
             updatedStoreItem.setUnit(unitOfMeasureRepository
                     .findById(storeItem.getUnit().getId())
-                    .orElseThrow(() -> new RuntimeException("Jednotka nebyla nalezena!")));
+                    .orElseThrow(() -> new NotFoundException("Jednotka s ID " + storeItem.getUnit().getId() + " nebyla nalezena!")));
         }
         else
         {

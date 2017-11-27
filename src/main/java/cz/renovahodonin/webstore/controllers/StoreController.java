@@ -1,19 +1,26 @@
 package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.constants.ServiceMapping;
-import cz.renovahodonin.webstore.constants.ViewName;
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.services.StoreService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 class StoreController
 {
+    static final String STORE = "/index";
+    static final String STORE_NEW = "/storeform";
+
     private StoreService storeService;
 
     StoreController(StoreService storeService)
@@ -27,7 +34,7 @@ class StoreController
 
         model.addAttribute("stores", storeService.getView());
 
-        return ViewName.STORE;
+        return STORE;
     }
 
     @GetMapping(ServiceMapping.STORE_NEW)
@@ -35,14 +42,14 @@ class StoreController
     {
         model.addAttribute("store", new Store());
 
-        return ViewName.STORE_NEW;
+        return STORE_NEW;
     }
 
-    @GetMapping("/{id}" + ServiceMapping.STORE_UPDATE)
+    @GetMapping("/{id}" + ServiceMapping.UPDATE)
     public String update(@PathVariable String id, Model model)
     {
         model.addAttribute("store", storeService.findById(Long.valueOf(id)));
-        return ViewName.STORE_NEW;
+        return STORE_NEW;
     }
 
     @PostMapping(ServiceMapping.STORE_POST)
@@ -52,10 +59,22 @@ class StoreController
         return "redirect:" + ServiceMapping.STORE;
     }
 
-    @GetMapping("/{id}" + ServiceMapping.STORE_DELETE)
+    @GetMapping("/{id}" + ServiceMapping.DELETE)
     public String delete(@PathVariable String id)
     {
         storeService.delete(Long.valueOf(id));
         return "redirect:" + ServiceMapping.STORE;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView handleNotFound(Exception exception){
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName(ExceptionHandlingController.ERROR_PAGE);
+        modelAndView.addObject("exception", exception);
+
+        return modelAndView;
     }
 }

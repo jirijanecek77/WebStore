@@ -1,5 +1,6 @@
 package cz.renovahodonin.webstore.services;
 
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.model.UnitOfMeasure;
@@ -56,10 +57,17 @@ public class StoreItemServiceImplTest
         verify(storeItemRepository, never()).findAll();
     }
 
+    @Test(expected = NotFoundException.class)
+    public void testFindByIdNotFound() throws Exception
+    {
+        when(storeItemRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        storeItemService.findById(STORE_ITEM_ID);
+    }
+
     @Test
     public void testDelete() throws Exception
     {
-
         storeItemService.delete(STORE_ITEM_ID);
 
         //then

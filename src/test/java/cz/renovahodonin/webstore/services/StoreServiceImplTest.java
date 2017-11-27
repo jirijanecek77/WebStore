@@ -1,5 +1,6 @@
 package cz.renovahodonin.webstore.services;
 
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class StoreServiceImplTest
     }
 
     @Test
-    public void getViewTest() throws Exception
+    public void testGetView() throws Exception
     {
 
         Store store = new Store();
@@ -48,7 +49,7 @@ public class StoreServiceImplTest
     }
 
     @Test
-    public void findByIdTest() throws Exception
+    public void testFindById() throws Exception
     {
         Store store = new Store();
         store.setId(STORE_ID);
@@ -61,6 +62,14 @@ public class StoreServiceImplTest
         assertNotNull("Null store returned", storeReturned);
         verify(storeRepository, times(1)).findById(anyLong());
         verify(storeRepository, never()).findAll();
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testFindByIdNotFound() throws Exception
+    {
+        when(storeRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        storeService.findById(STORE_ID);
     }
 
     @Test

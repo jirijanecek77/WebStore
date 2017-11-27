@@ -1,7 +1,6 @@
 package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.constants.ServiceMapping;
-import cz.renovahodonin.webstore.constants.ViewName;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.services.StoreItemService;
@@ -61,7 +60,7 @@ public class StoreItemControllerTest
         //when
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewName.STOREITEM))
+                .andExpect(view().name(StoreItemController.STOREITEM))
                 .andExpect(model().attributeExists("store"));
 
         //then
@@ -99,9 +98,9 @@ public class StoreItemControllerTest
         when(storeItemService.findById(anyLong())).thenReturn(storeItem);
         when(unitOfMeasureService.getView()).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.STOREITEM_UPDATE))
+        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.UPDATE))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewName.STOREITEM_NEW))
+                .andExpect(view().name(StoreItemController.STOREITEM_NEW))
                 .andExpect(model().attributeExists("storeId"))
                 .andExpect(model().attributeExists("storeItem"))
                 .andExpect(model().attributeExists("units"));
@@ -120,7 +119,7 @@ public class StoreItemControllerTest
         //when
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_NEW))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewName.STOREITEM_NEW))
+                .andExpect(view().name(StoreItemController.STOREITEM_NEW))
                 .andExpect(model().attributeExists("storeId"))
                 .andExpect(model().attributeExists("storeItem"))
                 .andExpect(model().attributeExists("units"));
@@ -132,7 +131,7 @@ public class StoreItemControllerTest
     @Test
     public void testDeleteAction() throws Exception
     {
-        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.STOREITEM_DELETE))
+        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.DELETE))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/" + STORE_ID + "/items"));
 
