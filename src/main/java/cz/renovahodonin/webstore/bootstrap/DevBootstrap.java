@@ -29,12 +29,15 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent>
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent)
     {
-        storeRepository.deleteAll();
-        unitOfMeasureRepository.deleteAll();
-
-        unitOfMeasureRepository.saveAll(getUnitsOfMeasure());
-        List<Store> stores = getStores();
-        storeRepository.saveAll(stores);
+        if (!unitOfMeasureRepository.findAll().iterator().hasNext())
+        {
+            unitOfMeasureRepository.saveAll(getUnitsOfMeasure());
+        }
+        if (!storeRepository.findAll().iterator().hasNext())
+        {
+            List<Store> stores = getStores();
+            storeRepository.saveAll(stores);
+        }
     }
 
     private List<UnitOfMeasure> getUnitsOfMeasure()
