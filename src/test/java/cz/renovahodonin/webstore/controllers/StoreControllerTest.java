@@ -45,7 +45,9 @@ public class StoreControllerTest
         MockitoAnnotations.initMocks(this);
 
         controller = new StoreController(storeService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ExceptionHandlingController())
+                .build();
     }
 
     @Test
@@ -127,6 +129,15 @@ public class StoreControllerTest
 
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.UPDATE))
                 .andExpect(status().isNotFound())
+                .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE));
+    }
+
+    @Test
+    public void testNumberFormatException() throws Exception
+    {
+
+        mockMvc.perform(get("/abc/" + ServiceMapping.UPDATE))
+                .andExpect(status().isBadRequest())
                 .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE));
     }
 

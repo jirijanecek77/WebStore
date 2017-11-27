@@ -34,7 +34,7 @@ class StoreServiceImpl implements StoreService
 	public Store findById(Long id)
 	{
 		return storeRepository.findById(id)
-				.orElseThrow(() -> new NotFoundException("Sklad s ID " + id + " nebyl nalezen!"));
+				.orElseThrow(() -> new NotFoundException("Sklad s ID " + id.toString() + " nebyl nalezen!"));
 	}
 
 	@Override
