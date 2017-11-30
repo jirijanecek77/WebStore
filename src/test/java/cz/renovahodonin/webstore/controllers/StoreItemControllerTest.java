@@ -6,6 +6,7 @@ import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.services.StoreItemService;
 import cz.renovahodonin.webstore.services.StoreService;
 import cz.renovahodonin.webstore.services.UnitOfMeasureService;
+import cz.renovahodonin.webstore.validators.StoreItemValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,6 +37,9 @@ public class StoreItemControllerTest
     @Mock
     private UnitOfMeasureService unitOfMeasureService;
 
+    @Mock
+    private StoreItemValidator storeItemValidator;
+
     private StoreItemController controller;
     private MockMvc mockMvc;
 
@@ -44,7 +48,7 @@ public class StoreItemControllerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        controller = new StoreItemController(storeService, storeItemService, unitOfMeasureService);
+        controller = new StoreItemController(storeService, storeItemService, unitOfMeasureService, storeItemValidator);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 

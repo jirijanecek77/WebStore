@@ -7,12 +7,16 @@ import cz.renovahodonin.webstore.model.UnitOfMeasure;
 import cz.renovahodonin.webstore.services.StoreItemService;
 import cz.renovahodonin.webstore.services.StoreService;
 import cz.renovahodonin.webstore.services.UnitOfMeasureService;
+import cz.renovahodonin.webstore.validators.StoreItemValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 class StoreItemController
@@ -21,15 +25,17 @@ class StoreItemController
     static final String STOREITEM_NEW = "/storeitemform";
 
     private StoreService storeService;
-
     private StoreItemService storeItemService;
     private UnitOfMeasureService unitOfMeasureService;
 
-    StoreItemController(StoreService storeService, StoreItemService storeItemService, UnitOfMeasureService unitOfMeasureService)
+    private StoreItemValidator storeItemValidator;
+
+    StoreItemController(StoreService storeService, StoreItemService storeItemService, UnitOfMeasureService unitOfMeasureService, StoreItemValidator storeItemValidator)
     {
         this.storeService = storeService;
         this.storeItemService = storeItemService;
         this.unitOfMeasureService = unitOfMeasureService;
+        this.storeItemValidator = storeItemValidator;
     }
 
     @GetMapping("/{storeId}" + ServiceMapping.STOREITEM)
@@ -54,7 +60,6 @@ class StoreItemController
 
         model.addAttribute("storeId", id);
         model.addAttribute("storeItem", storeItem);
-        model.addAttribute("units",  unitOfMeasureService.getView());
 
         return STOREITEM_NEW;
     }
@@ -64,13 +69,22 @@ class StoreItemController
     {
         model.addAttribute("storeId", Long.valueOf(storeId));
         model.addAttribute("storeItem", storeItemService.findById(Long.valueOf(id)));
-        model.addAttribute("units", unitOfMeasureService.getView());
         return STOREITEM_NEW;
     }
 
     @PostMapping("/{storeId}" + ServiceMapping.STOREITEM_POST)
-    public String saveOrUpdate(@PathVariable String storeId, @ModelAttribute StoreItem storeItem)
+    public String saveOrUpdate(@PathVariable String storeId, @ModelAttribute("storeItem") StoreItem storeItem, BindingResult bindingResult)
     {
+        Store store = new Store();
+        store.setId(Long.valueOf(storeId));
+        storeItem.setStore(store);
+
+        storeItemValidator.validate(storeItem, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return STOREITEM_NEW;
+        }
+
 	    storeItemService.save(Long.valueOf(storeId), storeItem);
 	    return "redirect:/" + storeId + ServiceMapping.STOREITEM;
     }
@@ -80,5 +94,10 @@ class StoreItemController
     {
         storeItemService.delete(Long.valueOf(id));
         return "redirect:/" + storeId + ServiceMapping.STOREITEM;
+    }
+
+    @ModelAttribute("units")
+    public List<UnitOfMeasure> registerUnitOfMeasure() {
+        return unitOfMeasureService.getView();
     }
 }

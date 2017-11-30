@@ -1,6 +1,5 @@
 package cz.renovahodonin.webstore.services;
 
-import cz.renovahodonin.webstore.exceptions.IllegalValueException;
 import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
@@ -38,12 +37,6 @@ class StoreItemServiceImpl implements StoreItemService
     {
 
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new NotFoundException("Sklad s ID " + storeId + " nebyl nalezen!"));
-
-        if (store.getItems().stream()
-                .anyMatch(item -> !item.getId().equals(storeItem.getId()) && item.getName().equals(storeItem.getName())))
-        {
-            throw new IllegalValueException("Položka s názvem " + storeItem.getName() + " již existuje!");
-        }
 
         Optional<StoreItem> storeItemInStore = store.getItems().stream()
                 .filter(item -> item.getId().equals(storeItem.getId()))
