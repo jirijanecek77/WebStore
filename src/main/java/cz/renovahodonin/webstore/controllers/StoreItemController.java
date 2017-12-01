@@ -21,8 +21,8 @@ import java.util.List;
 @Controller
 class StoreItemController
 {
-    static final String STOREITEM = "/storeitems";
-    static final String STOREITEM_NEW = "/storeitemform";
+    static final String LISTFORM_URL = "/storeitem/storeitemlist";
+    static final String EDITFORM_URL = "/storeitem/storeitemform";
 
     private StoreService storeService;
     private StoreItemService storeItemService;
@@ -44,7 +44,7 @@ class StoreItemController
 
         model.addAttribute("store", storeService.findById(Long.valueOf(storeId)));
 
-        return STOREITEM;
+        return LISTFORM_URL;
     }
 
     @GetMapping("/{storeId}" + ServiceMapping.STOREITEM_NEW)
@@ -61,7 +61,7 @@ class StoreItemController
         model.addAttribute("storeId", id);
         model.addAttribute("storeItem", storeItem);
 
-        return STOREITEM_NEW;
+        return EDITFORM_URL;
     }
 
     @GetMapping("/{storeId}" + ServiceMapping.STOREITEM_POST + "/{id}" + ServiceMapping.UPDATE)
@@ -69,7 +69,7 @@ class StoreItemController
     {
         model.addAttribute("storeId", Long.valueOf(storeId));
         model.addAttribute("storeItem", storeItemService.findById(Long.valueOf(id)));
-        return STOREITEM_NEW;
+        return EDITFORM_URL;
     }
 
     @PostMapping("/{storeId}" + ServiceMapping.STOREITEM_POST)
@@ -82,7 +82,7 @@ class StoreItemController
         storeItemValidator.validate(storeItem, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return STOREITEM_NEW;
+            return EDITFORM_URL;
         }
 
 	    storeItemService.save(Long.valueOf(storeId), storeItem);

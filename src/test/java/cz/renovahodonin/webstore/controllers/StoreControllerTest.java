@@ -57,7 +57,7 @@ public class StoreControllerTest
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(StoreController.STORE));
+                .andExpect(view().name(StoreController.LISTFORM_URL));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class StoreControllerTest
         String viewName = controller.getView(model);
 
         //then
-        assertEquals(StoreController.STORE, viewName);
+        assertEquals(StoreController.LISTFORM_URL, viewName);
         verify(storeService, times(1)).getView();
         verify(model, times(1)).addAttribute(eq("stores"), argumentCaptor.capture());
         List<Store> setInController = argumentCaptor.getValue();
@@ -115,7 +115,7 @@ public class StoreControllerTest
 
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.UPDATE))
                 .andExpect(status().isOk())
-                .andExpect(view().name(StoreController.STORE_NEW))
+                .andExpect(view().name(StoreController.EDITFORM_URL))
                 .andExpect(model().attributeExists("store"));
     }
 
@@ -129,7 +129,7 @@ public class StoreControllerTest
 
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.UPDATE))
                 .andExpect(status().isNotFound())
-                .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE));
+                .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE_URL));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class StoreControllerTest
 
         mockMvc.perform(get("/abc/" + ServiceMapping.UPDATE))
                 .andExpect(status().isBadRequest())
-                .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE));
+                .andExpect(view().name(ExceptionHandlingController.ERROR_PAGE_URL));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class StoreControllerTest
     {
         mockMvc.perform(get(ServiceMapping.STORE_NEW))
                 .andExpect(status().isOk())
-                .andExpect(view().name(StoreController.STORE_NEW))
+                .andExpect(view().name(StoreController.EDITFORM_URL))
                 .andExpect(model().attributeExists("store"));
     }
 

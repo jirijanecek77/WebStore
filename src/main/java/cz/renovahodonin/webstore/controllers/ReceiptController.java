@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 class ReceiptController
 {
+    static final String LISTFORM_URL = "/transaction/transactionlist";
+
     private StoreService storeService;
 
     ReceiptController(StoreService storeService)
@@ -24,6 +26,6 @@ class ReceiptController
         model.addAttribute("store", storeService.findById(Long.valueOf(storeId)));
         model.addAttribute("receipts", storeService.findById(Long.valueOf(storeId)).getReceipts());
 
-        return "/receipts";
+        return LISTFORM_URL;
     }
 }

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 class StoreController
 {
-    static final String STORE = "/index";
-    static final String STORE_NEW = "/storeform";
+    static final String LISTFORM_URL = "/store/storelist";
+    static final String EDITFORM_URL = "/store/storeform";
 
     private StoreService storeService;
 
@@ -29,7 +29,7 @@ class StoreController
 
         model.addAttribute("stores", storeService.getView());
 
-        return STORE;
+        return LISTFORM_URL;
     }
 
     @GetMapping(ServiceMapping.STORE_NEW)
@@ -37,14 +37,14 @@ class StoreController
     {
         model.addAttribute("store", new Store());
 
-        return STORE_NEW;
+        return EDITFORM_URL;
     }
 
     @GetMapping("/{id}" + ServiceMapping.UPDATE)
     public String update(@PathVariable String id, Model model)
     {
         model.addAttribute("store", storeService.findById(Long.valueOf(id)));
-        return STORE_NEW;
+        return EDITFORM_URL;
     }
 
     @PostMapping(ServiceMapping.STORE_POST)

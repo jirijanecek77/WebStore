@@ -64,7 +64,7 @@ public class StoreItemControllerTest
         //when
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM))
                 .andExpect(status().isOk())
-                .andExpect(view().name(StoreItemController.STOREITEM))
+                .andExpect(view().name(StoreItemController.LISTFORM_URL))
                 .andExpect(model().attributeExists("store"));
 
         //then
@@ -104,7 +104,7 @@ public class StoreItemControllerTest
 
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.UPDATE))
                 .andExpect(status().isOk())
-                .andExpect(view().name(StoreItemController.STOREITEM_NEW))
+                .andExpect(view().name(StoreItemController.EDITFORM_URL))
                 .andExpect(model().attributeExists("storeId"))
                 .andExpect(model().attributeExists("storeItem"))
                 .andExpect(model().attributeExists("units"));
@@ -123,7 +123,7 @@ public class StoreItemControllerTest
         //when
         mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_NEW))
                 .andExpect(status().isOk())
-                .andExpect(view().name(StoreItemController.STOREITEM_NEW))
+                .andExpect(view().name(StoreItemController.EDITFORM_URL))
                 .andExpect(model().attributeExists("storeId"))
                 .andExpect(model().attributeExists("storeItem"))
                 .andExpect(model().attributeExists("units"));

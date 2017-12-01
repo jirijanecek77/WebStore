@@ -45,7 +45,7 @@ public class ReceiptControllerTest
 
         mockMvc.perform(get("/" + STORE_ID + "/receipts"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/receipts"))
+                .andExpect(view().name(ReceiptController.LISTFORM_URL))
                 .andExpect(model().attributeExists("store"))
                 .andExpect(model().attributeExists("receipts"));
     }

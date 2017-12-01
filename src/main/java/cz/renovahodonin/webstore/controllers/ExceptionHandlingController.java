@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ExceptionHandlingController
 {
 
-	static final String ERROR_PAGE = "error";
+	static final String ERROR_PAGE_URL = "error";
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(NumberFormatException.class)
@@ -31,7 +31,7 @@ public class ExceptionHandlingController
 	{
 		ModelAndView modelAndView = new ModelAndView();
 
-		modelAndView.setViewName(ERROR_PAGE);
+		modelAndView.setViewName(ERROR_PAGE_URL);
 		modelAndView.addObject("exception", exception);
 
 		return modelAndView;
