@@ -3,8 +3,10 @@ package cz.renovahodonin.webstore.controllers;
 import cz.renovahodonin.webstore.constants.ServiceMapping;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.services.StoreService;
+import cz.renovahodonin.webstore.validators.StoreValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +19,12 @@ class StoreController
     static final String EDITFORM_URL = "/store/storeform";
 
     private StoreService storeService;
+    private StoreValidator storeValidator;
 
-    StoreController(StoreService storeService)
+    StoreController(StoreService storeService, StoreValidator storeValidator)
     {
         this.storeService = storeService;
+        this.storeValidator = storeValidator;
     }
 
     @GetMapping({"/index", "", ServiceMapping.STORE})
@@ -48,8 +52,15 @@ class StoreController
     }
 
     @PostMapping(ServiceMapping.STORE_POST)
-    public String saveOrUpdate(@ModelAttribute Store store)
+    public String saveOrUpdate(@ModelAttribute("store") Store store, BindingResult bindingResult)
     {
+        storeValidator.validate(store, bindingResult);
+
+        if (bindingResult.hasErrors())
+        {
+            return EDITFORM_URL;
+        }
+
         storeService.save(store);
         return "redirect:" + ServiceMapping.STORE;
     }

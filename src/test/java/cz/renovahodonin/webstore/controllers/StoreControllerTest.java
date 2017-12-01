@@ -4,6 +4,7 @@ import cz.renovahodonin.webstore.constants.ServiceMapping;
 import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.services.StoreService;
+import cz.renovahodonin.webstore.validators.StoreValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +34,9 @@ public class StoreControllerTest
     private StoreService storeService;
 
     @Mock
+    private StoreValidator storeValidator;
+
+    @Mock
     private Model model;
 
     private StoreController controller;
@@ -44,7 +48,7 @@ public class StoreControllerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        controller = new StoreController(storeService);
+        controller = new StoreController(storeService, storeValidator);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new ExceptionHandlingController())
                 .build();
