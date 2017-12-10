@@ -1,6 +1,7 @@
 package cz.renovahodonin.webstore.api.v1.services;
 
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
+import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class StoreServiceImpl implements StoreService
         {
             return new StoreDto().fromStore(store.get());
         }
-        return null;
+        throw new NotFoundException();
     }
 
     @Override

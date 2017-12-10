@@ -38,7 +38,6 @@ public class StoreControllerTest
     @Autowired
     MockMvc mockMvc; //provided by Spring Context
 
-
     private StoreDto storeDto_1;
     private StoreDto storeDto_2;
 
