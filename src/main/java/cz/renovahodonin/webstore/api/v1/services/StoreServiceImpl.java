@@ -1,6 +1,7 @@
 package cz.renovahodonin.webstore.api.v1.services;
 
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
+import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.repositories.StoreRepository;
@@ -33,6 +34,16 @@ public class StoreServiceImpl implements StoreService
         List<Store> stores = storeRepository.findAll();
         return stores.stream()
                 .map(store -> new StoreDto().fromStore(store))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StoreItemDto> getAllStoreItemsByStore(Long storeId)
+    {
+        Store store = storeRepository.findById(storeId).orElseThrow(NotFoundException::new);
+
+        return store.getItems().stream()
+                .map(item -> new StoreItemDto().fromStoreItem(item))
                 .collect(Collectors.toList());
     }
 

@@ -1,6 +1,7 @@
 package cz.renovahodonin.webstore.api.v1.controllers;
 
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
+import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,25 +36,32 @@ public class StoreController
         return storeService.getStoreById(id);
     }
 
+    @GetMapping("/{id}/storeitems")
+    @ResponseStatus(HttpStatus.OK)
+    public List<StoreItemDto> getStoreItemListByStore(@PathVariable Long id)
+    {
+        return storeService.getAllStoreItemsByStore(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StoreDto createNewStore(@RequestBody StoreDto StoreDTO)
+    public StoreDto createNewStore(@RequestBody StoreDto storeDto)
     {
-        return storeService.addStore(StoreDTO);
+        return storeService.addStore(storeDto);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public StoreDto updateStore(@PathVariable Long id, @RequestBody StoreDto StoreDTO)
+    public StoreDto updateStore(@PathVariable Long id, @RequestBody StoreDto storeDto)
     {
-        return storeService.saveStore(id, StoreDTO);
+        return storeService.saveStore(id, storeDto);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public StoreDto patchStore(@PathVariable Long id, @RequestBody StoreDto StoreDTO)
+    public StoreDto patchStore(@PathVariable Long id, @RequestBody StoreDto storeDto)
     {
-        return storeService.saveStore(id, StoreDTO);
+        return storeService.saveStore(id, storeDto);
     }
 
     @DeleteMapping("/{id}")

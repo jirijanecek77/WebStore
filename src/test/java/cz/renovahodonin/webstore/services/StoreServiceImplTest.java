@@ -1,9 +1,12 @@
 package cz.renovahodonin.webstore.services;
 
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
+import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreServiceImpl;
 import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.Store;
+import cz.renovahodonin.webstore.model.StoreItem;
+import cz.renovahodonin.webstore.model.UnitOfMeasure;
 import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +70,7 @@ public class StoreServiceImplTest
     }
 
     @Test
-    public void testFindById() throws Exception
+    public void testGetById() throws Exception
     {
         Store store = new Store();
         store.setId(STORE_ID1);
@@ -79,6 +82,30 @@ public class StoreServiceImplTest
 
         assertNotNull("Null store returned", storeReturned);
         verify(storeRepository, times(1)).findById(anyLong());
+        verify(storeRepository, never()).findAll();
+    }
+
+    @Test
+    public void testGetAllStoreItems() throws Exception
+    {
+        //given
+        Store store = new Store();
+        StoreItem item1 = new StoreItem();
+        item1.setUnit(new UnitOfMeasure());
+        store.addStoreItem(item1);
+
+        StoreItem item2 = new StoreItem();
+        item2.setUnit(new UnitOfMeasure());
+        store.addStoreItem(item2);
+
+        given(storeRepository.findById(STORE_ID1)).willReturn(Optional.of(store));
+
+        //when
+        List<StoreItemDto> storeItemDtoList = storeService.getAllStoreItemsByStore(STORE_ID1);
+
+        //then
+        then(storeRepository).should(times(1)).findById(anyLong());
+        assertThat(storeItemDtoList.size(), is(equalTo(2)));
         verify(storeRepository, never()).findAll();
     }
 

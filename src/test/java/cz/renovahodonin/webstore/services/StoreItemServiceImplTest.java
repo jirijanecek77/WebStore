@@ -15,16 +15,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class StoreItemServiceImplTest
@@ -47,30 +41,6 @@ public class StoreItemServiceImplTest
         MockitoAnnotations.initMocks(this);
 
         storeItemService = new StoreItemServiceImpl(storeRepository, storeItemRepository);
-    }
-
-    @Test
-    public void testGetAllStoreItems() throws Exception
-    {
-        //given
-        Store store = new Store();
-        StoreItem item1 = new StoreItem();
-        item1.setUnit(new UnitOfMeasure());
-        store.addStoreItem(item1);
-
-        StoreItem item2 = new StoreItem();
-        item2.setUnit(new UnitOfMeasure());
-        store.addStoreItem(item2);
-
-        given(storeRepository.findById(STORE_ID)).willReturn(Optional.of(store));
-
-        //when
-        List<StoreItemDto> storeItemDtoList = storeItemService.getAllStoreItemsByStore(STORE_ID);
-
-        //then
-        then(storeRepository).should(times(1)).findById(anyLong());
-        assertThat(storeItemDtoList.size(), is(equalTo(2)));
-        verify(storeItemRepository, never()).findAll();
     }
 
     @Test
