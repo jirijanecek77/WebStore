@@ -11,9 +11,9 @@ public interface StoreService
 
     List<StoreDto> getAllStores();
 
-    StoreDto addStore(StoreDto StoreDTO);
+    StoreDto addStore(StoreDto storeDto);
 
-    StoreDto saveStore(Long id, StoreDto StoreDTO);
+    StoreDto saveStore(Long id, StoreDto storeDto);
 
     void deleteStore(Long id);
 }

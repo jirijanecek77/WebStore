@@ -33,8 +33,7 @@ public class StoreServiceImplTest
     @Mock
     private StoreRepository storeRepository;
 
-    private StoreDto storeDto_1;
-    private StoreDto storeDto_2;
+    private StoreDto storeDto;
 
     @Before
     public void setUp() throws Exception
@@ -42,8 +41,7 @@ public class StoreServiceImplTest
         MockitoAnnotations.initMocks(this);
 
         storeService = new StoreServiceImpl(storeRepository);
-        storeDto_1 = new StoreDto("Store 1");
-        storeDto_2 = new StoreDto("Store 2");
+        storeDto = new StoreDto("store");
     }
 
     @Test
@@ -102,7 +100,7 @@ public class StoreServiceImplTest
         given(storeRepository.save(any(Store.class))).willReturn(store);
 
         //when
-        StoreDto savedStoreDto = storeService.addStore(storeDto_1);
+        StoreDto savedStoreDto = storeService.addStore(storeDto);
 
         //then
         // 'should' defaults to times = 1

@@ -7,7 +7,6 @@ import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,13 +22,9 @@ public class StoreServiceImpl implements StoreService
     @Override
     public StoreDto getStoreById(Long id)
     {
-        Optional<Store> store = storeRepository.findById(id);
+        Store store = storeRepository.findById(id).orElseThrow(NotFoundException::new);
 
-        if (store.isPresent())
-        {
-            return new StoreDto().fromStore(store.get());
-        }
-        throw new NotFoundException();
+        return new StoreDto().fromStore(store);
     }
 
     @Override
