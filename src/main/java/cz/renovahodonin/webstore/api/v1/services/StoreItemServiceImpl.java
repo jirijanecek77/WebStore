@@ -4,18 +4,15 @@ import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.exceptions.NotFoundException;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.repositories.StoreItemRepository;
-import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StoreItemServiceImpl implements StoreItemService
 {
-    private final StoreRepository storeRepository;
     private final StoreItemRepository storeItemRepository;
 
-    public StoreItemServiceImpl(StoreRepository storeRepository, StoreItemRepository storeItemRepository)
+    public StoreItemServiceImpl(StoreItemRepository storeItemRepository)
     {
-        this.storeRepository = storeRepository;
         this.storeItemRepository = storeItemRepository;
     }
 

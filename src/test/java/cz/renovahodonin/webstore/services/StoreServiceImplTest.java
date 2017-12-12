@@ -30,6 +30,7 @@ public class StoreServiceImplTest
 {
     private static final Long STORE_ID1 = 1L;
     private static final Long STORE_ID2 = 2L;
+    private static final String STORE_NAME = "name";
 
     private StoreServiceImpl storeService;
 
@@ -123,6 +124,7 @@ public class StoreServiceImplTest
 
         Store store = new Store();
         store.setId(STORE_ID2);
+        store.setName(STORE_NAME);
 
         given(storeRepository.save(any(Store.class))).willReturn(store);
 
@@ -132,6 +134,7 @@ public class StoreServiceImplTest
         //then
         // 'should' defaults to times = 1
         then(storeRepository).should().save(any(Store.class));
+        assertThat(savedStoreDto.getName(), is(equalTo(STORE_NAME)));
     }
 
     @Test

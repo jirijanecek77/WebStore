@@ -1,122 +1,105 @@
 package cz.renovahodonin.webstore.controllers;
 
+import cz.renovahodonin.webstore.api.v1.controllers.StoreItemController;
+import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
+import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
+import cz.renovahodonin.webstore.api.v1.dto.UnitOfMeasureDto;
+import cz.renovahodonin.webstore.api.v1.services.StoreItemService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = {StoreItemController.class})
 public class StoreItemControllerTest
 {
-//    private static final Long STORE_ID = 1L;
-//    private static final Long STORE_ITEM_ID = 2L;
-//
-//    @Mock
-//    private StoreService storeService;
-//
-//    @Mock
-//    private StoreItemService storeItemService;
-//
-//    @Mock
-//    private UnitOfMeasureService unitOfMeasureService;
-//
-//    @Mock
-//    private StoreItemValidator storeItemValidator;
-//
-//    private StoreItemController controller;
-//    private MockMvc mockMvc;
-//
-//    @Before
-//    public void setUp() throws Exception
-//    {
-//        MockitoAnnotations.initMocks(this);
-//
-//        controller = new StoreItemController(storeService, storeItemService, unitOfMeasureService, storeItemValidator);
-//        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-//    }
-//
-//    @Test
-//    public void testGetView() throws Exception
-//    {
-//
-//        //given
-//        Store store = new Store();
-//        store.setId(STORE_ID);
-//        when(storeService.findById(anyLong())).thenReturn(store);
-//
-//        //when
-//        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name(StoreItemController.LISTFORM_URL))
-//                .andExpect(dto().attributeExists("store"));
-//
-//        //then
-//        verify(storeService, times(1)).findById(anyLong());
-//    }
-//
-//    @Test
-//    public void testPostNewStoreItemForm() throws Exception
-//    {
-//        //given
-//        StoreItem storeItem = new StoreItem();
-//        storeItem.setId(2L);
-//
-//        //when
-//        when(storeItemService.save(anyLong(), any())).thenReturn(storeItem);
-//
-//        //then
-//        mockMvc.perform(post("/" + STORE_ID + "/storeItem/")
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .param("id", "")
-//                .param("description", "some string")
-//        )
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/" + STORE_ID + "/items"));
-//    }
-//
-//    @Test
-//    public void testGetUpdateView() throws Exception
-//    {
-//        //given
-//        StoreItem storeItem = new StoreItem();
-//        storeItem.setId(2L);
-//
-//        //when
-//        when(storeItemService.findById(anyLong())).thenReturn(storeItem);
-//        when(unitOfMeasureService.getView()).thenReturn(new ArrayList<>());
-//
-//        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.UPDATE))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name(StoreItemController.EDITFORM_URL))
-//                .andExpect(dto().attributeExists("storeId"))
-//                .andExpect(dto().attributeExists("storeItem"))
-//                .andExpect(dto().attributeExists("units"));
-//
-//        //then
-//        verify(storeItemService, times(1)).findById(anyLong());
-//        verify(unitOfMeasureService, times(1)).getView();
-//    }
-//
-//    @Test
-//    public void testGetNewStoreForm() throws Exception
-//    {
-//        //given
-//        when(unitOfMeasureService.getView()).thenReturn(new ArrayList<>());
-//
-//        //when
-//        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_NEW))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name(StoreItemController.EDITFORM_URL))
-//                .andExpect(dto().attributeExists("storeId"))
-//                .andExpect(dto().attributeExists("storeItem"))
-//                .andExpect(dto().attributeExists("units"));
-//
-//        //then
-//        verify(unitOfMeasureService, times(1)).getView();
-//    }
-//
-//    @Test
-//    public void testDeleteAction() throws Exception
-//    {
-//        mockMvc.perform(get("/" + STORE_ID + ServiceMapping.STOREITEM_POST + "/" + STORE_ITEM_ID + ServiceMapping.DELETE))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/" + STORE_ID + "/items"));
-//
-//        verify(storeItemService, times(1)).delete(anyLong());
-//    }
 
+    @MockBean
+    private StoreItemService storeItemService;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    private StoreItemDto storeItemDto;
+
+    @Before
+    public void setUp() throws Exception
+    {
+        storeItemDto = new StoreItemDto("StoreItem", new UnitOfMeasureDto(), new StoreDto());
+    }
+
+    @Test
+    public void getStoreItemById() throws Exception
+    {
+
+        given(storeItemService.getStoreItemById(anyLong())).willReturn(storeItemDto);
+
+        mockMvc.perform(get(StoreItemController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(storeItemDto.getName())));
+    }
+
+    @Test
+    public void createNewStoreItem() throws Exception
+    {
+
+        given(storeItemService.addStoreItem(storeItemDto)).willReturn(storeItemDto);
+
+        mockMvc.perform(post(StoreItemController.BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(storeItemDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", equalTo(storeItemDto.getName())));
+    }
+
+    @Test
+    public void updateStore() throws Exception
+    {
+
+        given(storeItemService.saveStoreItem(anyLong(), any(StoreItemDto.class))).willReturn(storeItemDto);
+
+        mockMvc.perform(put(StoreItemController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(storeItemDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(storeItemDto.getName())));
+    }
+
+    @Test
+    public void patchStore() throws Exception
+    {
+        given(storeItemService.saveStoreItem(anyLong(), any(StoreItemDto.class))).willReturn(storeItemDto);
+
+        mockMvc.perform(patch(StoreItemController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(storeItemDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(storeItemDto.getName())));
+    }
+
+    @Test
+    public void deleteStoreItem() throws Exception
+    {
+        mockMvc.perform(delete(StoreItemController.BASE_URL + "/1"))
+                .andExpect(status().isOk());
+
+        then(storeItemService).should().deleteStoreItem(anyLong());
+
+    }
 }

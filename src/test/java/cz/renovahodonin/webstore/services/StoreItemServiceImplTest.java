@@ -9,7 +9,6 @@ import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.model.UnitOfMeasure;
 import cz.renovahodonin.webstore.repositories.StoreItemRepository;
-import cz.renovahodonin.webstore.repositories.StoreRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,30 +16,29 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 public class StoreItemServiceImplTest
 {
-    private static final Long STORE_ID = 10L;
-    private static final Long STORE_ITEM_ID1 = 1L;
-    private static final Long STORE_ITEM_ID2 = 2L;
-    private static final Long UNIT_ID = 30L;
+    private static final Long STORE_ITEM_ID = 1L;
+    private static final String STORE_ITEM_NAME = "name";
 
     private StoreItemServiceImpl storeItemService;
 
     @Mock
     private StoreItemRepository storeItemRepository;
-    @Mock
-    private StoreRepository storeRepository;
 
     @Before
     public void setUp() throws Exception
     {
         MockitoAnnotations.initMocks(this);
 
-        storeItemService = new StoreItemServiceImpl(storeRepository, storeItemRepository);
+        storeItemService = new StoreItemServiceImpl(storeItemRepository);
     }
 
     @Test
@@ -53,7 +51,7 @@ public class StoreItemServiceImplTest
 
         when(storeItemRepository.findById(anyLong())).thenReturn(storeItemOptional);
 
-        StoreItemDto storeItemReturned = storeItemService.getStoreItemById(STORE_ITEM_ID1);
+        StoreItemDto storeItemReturned = storeItemService.getStoreItemById(STORE_ITEM_ID);
 
         assertNotNull("Null store item returned", storeItemReturned);
         verify(storeItemRepository, times(1)).findById(anyLong());
@@ -65,13 +63,13 @@ public class StoreItemServiceImplTest
     {
         when(storeItemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        storeItemService.getStoreItemById(STORE_ITEM_ID1);
+        storeItemService.getStoreItemById(STORE_ITEM_ID);
     }
 
     @Test
     public void testDelete() throws Exception
     {
-        storeItemService.deleteStoreItem(STORE_ITEM_ID1);
+        storeItemService.deleteStoreItem(STORE_ITEM_ID);
 
         //then
         verify(storeItemRepository, times(1)).deleteById(anyLong());
@@ -81,25 +79,20 @@ public class StoreItemServiceImplTest
     public void testSave() throws Exception
     {
         //given
-        UnitOfMeasureDto unit = new UnitOfMeasureDto("unit");
-        StoreDto storeDto = new StoreDto("store");
-
-        StoreItemDto storeItemDto = new StoreItemDto();
-        storeItemDto.setUnit(unit);
-        storeItemDto.setName("name");
-        storeItemDto.setStore(storeDto);
+        StoreItemDto storeItemDto = new StoreItemDto(STORE_ITEM_NAME, new UnitOfMeasureDto(), new StoreDto());
 
         StoreItem item = new StoreItem();
+        item.setName(STORE_ITEM_NAME);
         item.setStore(new Store());
         item.setUnit(new UnitOfMeasure());
 
-        when(storeItemRepository.save(any())).thenReturn(item);
-
         //when
-        StoreItemDto savedStoreItem = storeItemService.saveStoreItem(STORE_ITEM_ID1, storeItemDto);
+        when(storeItemRepository.save(any())).thenReturn(item);
+        StoreItemDto savedStoreItem = storeItemService.saveStoreItem(STORE_ITEM_ID, storeItemDto);
 
         //then
         verify(storeItemRepository, times(1)).save(any(StoreItem.class));
+        assertThat(savedStoreItem.getName(), is(equalTo(STORE_ITEM_NAME)));
     }
 
 }

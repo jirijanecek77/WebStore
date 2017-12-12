@@ -2,6 +2,7 @@ package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.api.v1.controllers.StoreController;
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
+import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreService;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = {StoreController.class})
 public class StoreControllerTest
 {
+
+    private static final Long STORE_ID = 1L;
 
     @MockBean
     StoreService storeService;
@@ -71,6 +74,19 @@ public class StoreControllerTest
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(storeDto_1.getName())));
+    }
+
+    @Test
+    public void getStoreItemListByStore() throws Exception
+    {
+        List<StoreItemDto> storeItemListDTO = Arrays.asList(new StoreItemDto(), new StoreItemDto());
+
+        when(storeService.getAllStoreItemsByStore(STORE_ID)).thenReturn(storeItemListDTO);
+
+        mockMvc.perform(get(StoreController.BASE_URL + "/1/storeitems")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test

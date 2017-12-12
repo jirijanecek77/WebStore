@@ -39,6 +39,13 @@ public class StoreItemController
         return storeItemService.saveStoreItem(id, storeItemDto);
     }
 
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public StoreItemDto patchStoreItem(@PathVariable Long id, @RequestBody StoreItemDto storeItemDto)
+    {
+        return storeItemService.saveStoreItem(id, storeItemDto);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteStoreItem(@PathVariable Long id)
