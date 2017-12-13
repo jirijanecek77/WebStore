@@ -4,6 +4,7 @@ import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreService;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,21 +46,21 @@ public class StoreController
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StoreDto createNewStore(@RequestBody StoreDto storeDto)
+    public StoreDto createNewStore(@Validated @RequestBody StoreDto storeDto)
     {
         return storeService.addStore(storeDto);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public StoreDto updateStore(@PathVariable Long id, @RequestBody StoreDto storeDto)
+    public StoreDto updateStore(@PathVariable Long id, @Validated @RequestBody StoreDto storeDto)
     {
         return storeService.saveStore(id, storeDto);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public StoreDto patchStore(@PathVariable Long id, @RequestBody StoreDto storeDto)
+    public StoreDto patchStore(@PathVariable Long id, @Validated @RequestBody StoreDto storeDto)
     {
         return storeService.saveStore(id, storeDto);
     }

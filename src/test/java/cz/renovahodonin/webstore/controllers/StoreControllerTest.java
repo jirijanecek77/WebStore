@@ -4,6 +4,7 @@ import cz.renovahodonin.webstore.api.v1.controllers.StoreController;
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreService;
+import cz.renovahodonin.webstore.exceptions.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +71,7 @@ public class StoreControllerTest
 
         given(storeService.getStoreById(anyLong())).willReturn(storeDto_1);
 
-        mockMvc.perform(get(StoreController.BASE_URL + "/1")
+        mockMvc.perform(get(StoreController.BASE_URL + "/" + STORE_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(storeDto_1.getName())));
@@ -83,7 +84,7 @@ public class StoreControllerTest
 
         when(storeService.getAllStoreItemsByStore(STORE_ID)).thenReturn(storeItemListDTO);
 
-        mockMvc.perform(get(StoreController.BASE_URL + "/1/storeitems")
+        mockMvc.perform(get(StoreController.BASE_URL + "/" + STORE_ID + "/storeitems")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
@@ -93,7 +94,7 @@ public class StoreControllerTest
     public void createNewStore() throws Exception
     {
 
-        given(storeService.addStore(storeDto_1)).willReturn(storeDto_1);
+        given(storeService.addStore(any(StoreDto.class))).willReturn(storeDto_1);
 
         mockMvc.perform(post(StoreController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,12 +104,36 @@ public class StoreControllerTest
     }
 
     @Test
+    public void createStore_withNullName_Fails() throws Exception {
+
+        StoreDto storeDto = new StoreDto();
+        given(storeService.addStore(any(StoreDto.class))).willReturn(storeDto);
+
+        mockMvc.perform(post(StoreController.BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(storeDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createStore_withShortName_Fails() throws Exception {
+
+        StoreDto storeDto = new StoreDto("");
+        given(storeService.addStore(any(StoreDto.class))).willReturn(storeDto);
+
+        mockMvc.perform(post(StoreController.BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(storeDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void updateStore() throws Exception
     {
 
         given(storeService.saveStore(anyLong(), any(StoreDto.class))).willReturn(storeDto_1);
 
-        mockMvc.perform(put(StoreController.BASE_URL + "/1")
+        mockMvc.perform(put(StoreController.BASE_URL + "/" + STORE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.asJsonString(storeDto_1)))
                 .andExpect(status().isOk())
@@ -120,7 +145,7 @@ public class StoreControllerTest
     {
         given(storeService.saveStore(anyLong(), any(StoreDto.class))).willReturn(storeDto_1);
 
-        mockMvc.perform(patch(StoreController.BASE_URL + "/1")
+        mockMvc.perform(patch(StoreController.BASE_URL + "/" + STORE_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.asJsonString(storeDto_1)))
                 .andExpect(status().isOk())
@@ -130,10 +155,22 @@ public class StoreControllerTest
     @Test
     public void deleteStore() throws Exception
     {
-        mockMvc.perform(delete(StoreController.BASE_URL + "/1"))
+        mockMvc.perform(delete(StoreController.BASE_URL + "/" + STORE_ID))
                 .andExpect(status().isOk());
 
         then(storeService).should().deleteStore(anyLong());
 
     }
+
+    @Test
+    public void testNotFoundException() throws Exception {
+
+        when(storeService.getStoreById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(StoreController.BASE_URL + "/222")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+
 }

@@ -4,7 +4,7 @@ import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.dto.UnitOfMeasureDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreItemServiceImpl;
-import cz.renovahodonin.webstore.exceptions.NotFoundException;
+import cz.renovahodonin.webstore.exceptions.ResourceNotFoundException;
 import cz.renovahodonin.webstore.model.Store;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.model.UnitOfMeasure;
@@ -58,7 +58,7 @@ public class StoreItemServiceImplTest
         verify(storeItemRepository, never()).findAll();
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void testGetStoreItemByIdNotFound() throws Exception
     {
         when(storeItemRepository.findById(anyLong())).thenReturn(Optional.empty());

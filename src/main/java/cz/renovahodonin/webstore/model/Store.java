@@ -1,9 +1,12 @@
 package cz.renovahodonin.webstore.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,6 +18,12 @@ public class Store
     private Long id;
 
     private String name;
+
+    @CreationTimestamp
+    private Date created;
+
+    @UpdateTimestamp
+    private Date updated;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     @OrderBy("name")

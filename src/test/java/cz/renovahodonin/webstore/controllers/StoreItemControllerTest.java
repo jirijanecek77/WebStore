@@ -5,6 +5,7 @@ import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.dto.UnitOfMeasureDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreItemService;
+import cz.renovahodonin.webstore.exceptions.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,7 +40,7 @@ public class StoreItemControllerTest
     private StoreItemDto storeItemDto;
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
         storeItemDto = new StoreItemDto("StoreItem", new UnitOfMeasureDto(), new StoreDto());
     }
@@ -101,5 +103,15 @@ public class StoreItemControllerTest
 
         then(storeItemService).should().deleteStoreItem(anyLong());
 
+    }
+
+    @Test
+    public void testNotFoundException() throws Exception {
+
+        when(storeItemService.getStoreItemById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(StoreItemController.BASE_URL + "/222")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

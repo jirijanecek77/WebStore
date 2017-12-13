@@ -1,7 +1,7 @@
 package cz.renovahodonin.webstore.api.v1.services;
 
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
-import cz.renovahodonin.webstore.exceptions.NotFoundException;
+import cz.renovahodonin.webstore.exceptions.ResourceNotFoundException;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.repositories.StoreItemRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class StoreItemServiceImpl implements StoreItemService
     @Override
     public StoreItemDto getStoreItemById(Long id)
     {
-        StoreItem storeItem = storeItemRepository.findById(id).orElseThrow(NotFoundException::new);
+        StoreItem storeItem = storeItemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
         return new StoreItemDto().fromStoreItem(storeItem);
     }
 
