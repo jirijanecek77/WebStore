@@ -5,6 +5,7 @@ import cz.renovahodonin.webstore.exceptions.ResourceNotFoundException;
 import cz.renovahodonin.webstore.model.StoreItem;
 import cz.renovahodonin.webstore.repositories.StoreItemRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 @Service
 public class StoreItemServiceImpl implements StoreItemService
@@ -28,6 +29,18 @@ public class StoreItemServiceImpl implements StoreItemService
     {
         StoreItem savedStoreItem = storeItemRepository.save(storeItemDto.fromDto());
         return new StoreItemDto().fromStoreItem(savedStoreItem);
+    }
+
+    @Override
+    public boolean validate(StoreItemDto storeItemDto, BindingResult result)
+    {
+        if (storeItemRepository.findByStore(storeItemDto.getStore().fromDto()).stream()
+                .anyMatch(s -> s.getName().equals(storeItemDto.getName())))
+        {
+            result.rejectValue("name", "Duplicate.storeItemDto.name");
+            return false;
+        }
+        return !result.hasErrors();
     }
 
     @Override

@@ -15,7 +15,7 @@ public class StoreDto
 {
 
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 3, max = 255)
     private String name;
 
     public Store fromDto() {

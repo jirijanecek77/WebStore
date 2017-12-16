@@ -13,14 +13,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BeanPropertyBindingResult;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class StoreItemServiceImplTest
@@ -64,6 +67,30 @@ public class StoreItemServiceImplTest
         when(storeItemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         storeItemService.getStoreItemById(STORE_ITEM_ID);
+    }
+
+    @Test
+    public void testValidation_withDuplicateName_returnsFalse()
+    {
+        //given
+        Store store = new Store();
+        StoreItem item = new StoreItem();
+        item.setName(STORE_ITEM_NAME);
+        store.addStoreItem(item);
+
+        StoreItemDto storeItemDto = new StoreItemDto();
+        storeItemDto.setName(STORE_ITEM_NAME);
+        storeItemDto.setStore(new StoreDto());
+
+        given(storeItemRepository.findByStore(any(Store.class))).willReturn(Arrays.asList(item));
+
+        //when
+        boolean result = storeItemService.validate(storeItemDto, new BeanPropertyBindingResult(storeItemDto, "storeItem"));
+
+        //then
+        then(storeItemRepository).should(times(1)).findByStore(any(Store.class));
+        assertFalse("validation should fail", result);
+        verify(storeItemRepository, never()).save(any(StoreItem.class));
     }
 
     @Test

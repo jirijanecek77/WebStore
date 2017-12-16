@@ -1,6 +1,7 @@
 package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.api.v1.controllers.StoreController;
+import cz.renovahodonin.webstore.api.v1.dto.ExceptionResponseDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.services.StoreService;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -95,6 +97,7 @@ public class StoreControllerTest
     {
 
         given(storeService.addStore(any(StoreDto.class))).willReturn(storeDto_1);
+        given(storeService.validate(any(StoreDto.class), any(BindingResult.class))).willReturn(true);
 
         mockMvc.perform(post(StoreController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -104,26 +107,13 @@ public class StoreControllerTest
     }
 
     @Test
-    public void createStore_withNullName_Fails() throws Exception {
+    public void createStore_withInvalidName_Fails() throws Exception {
 
-        StoreDto storeDto = new StoreDto();
-        given(storeService.addStore(any(StoreDto.class))).willReturn(storeDto);
-
-        mockMvc.perform(post(StoreController.BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.asJsonString(storeDto)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void createStore_withShortName_Fails() throws Exception {
-
-        StoreDto storeDto = new StoreDto("");
-        given(storeService.addStore(any(StoreDto.class))).willReturn(storeDto);
+        given(storeService.validate(any(StoreDto.class), any(BindingResult.class))).willReturn(false);
 
         mockMvc.perform(post(StoreController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.asJsonString(storeDto)))
+                .content(TestUtils.asJsonString(new ExceptionResponseDto("code","msg"))))
                 .andExpect(status().isBadRequest());
     }
 

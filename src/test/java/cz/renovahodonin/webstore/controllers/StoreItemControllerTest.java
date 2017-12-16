@@ -1,6 +1,7 @@
 package cz.renovahodonin.webstore.controllers;
 
 import cz.renovahodonin.webstore.api.v1.controllers.StoreItemController;
+import cz.renovahodonin.webstore.api.v1.dto.ExceptionResponseDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreDto;
 import cz.renovahodonin.webstore.api.v1.dto.StoreItemDto;
 import cz.renovahodonin.webstore.api.v1.dto.UnitOfMeasureDto;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,12 +64,24 @@ public class StoreItemControllerTest
     {
 
         given(storeItemService.addStoreItem(storeItemDto)).willReturn(storeItemDto);
+        given(storeItemService.validate(any(StoreItemDto.class), any(BindingResult.class))).willReturn(true);
 
         mockMvc.perform(post(StoreItemController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.asJsonString(storeItemDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", equalTo(storeItemDto.getName())));
+    }
+
+    @Test
+    public void createStoreItem_withInvalidName_Fails() throws Exception {
+
+        given(storeItemService.validate(any(StoreItemDto.class), any(BindingResult.class))).willReturn(false);
+
+        mockMvc.perform(post(StoreItemController.BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(new ExceptionResponseDto("code","msg"))))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

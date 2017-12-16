@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +20,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -45,7 +45,7 @@ public class StoreServiceImplTest
         MockitoAnnotations.initMocks(this);
 
         storeService = new StoreServiceImpl(storeRepository);
-        storeDto = new StoreDto("store");
+        storeDto = new StoreDto(STORE_NAME);
     }
 
     @Test
@@ -116,6 +116,25 @@ public class StoreServiceImplTest
         when(storeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         storeService.getStoreById(STORE_ID1);
+    }
+
+    @Test
+    public void testValidation_withDuplicateName_returnsFalse()
+    {
+        //given
+        Store store = new Store();
+        store.setId(STORE_ID1);
+        store.setName(STORE_NAME);
+
+        given(storeRepository.findAll()).willReturn(Arrays.asList(store));
+
+        //when
+        boolean result = storeService.validate(storeDto, new BeanPropertyBindingResult(storeDto, "store"));
+
+        //then
+        then(storeRepository).should(times(1)).findAll();
+        assertFalse("validation should fail", result);
+        verify(storeRepository, never()).save(any(Store.class));
     }
 
     @Test
